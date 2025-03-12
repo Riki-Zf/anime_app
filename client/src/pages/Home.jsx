@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getHomeAnime } from "../../service/api";
 
 const Home = () => {
@@ -45,7 +46,7 @@ const Home = () => {
         <h1 className="text-xl font-bold mb-4 pb-2 border-b">Anime Terbaru</h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3">
           {recentAnime.map((anime) => (
-            <div key={anime.animeId} className="relative border rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
+            <Link key={anime.animeId} to={`/anime/${anime.animeId}`} className="relative border rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl cursor-pointer">
               {/* Gambar Anime */}
               <img src={anime.poster} alt={anime.title} className="w-full h-[160px] object-cover" />
 
@@ -57,7 +58,7 @@ const Home = () => {
 
               {/* Overlay untuk Judul Anime */}
               <div className="absolute bottom-0 w-full bg-black bg-opacity-70 text-white text-xs text-center p-1">{anime.title}</div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -67,7 +68,7 @@ const Home = () => {
         <h1 className="text-xl font-bold mb-4 pb-2 border-b">Batch Anime</h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-3">
           {batchAnime.map((anime) => (
-            <div key={anime.batchId} className="relative border rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
+            <Link key={anime.batchId} to={`/batch/${anime.batchId}`} className="relative border rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl cursor-pointer">
               {/* Gambar Anime */}
               <img src={anime.poster} alt={anime.title} className="w-full h-[160px] object-cover" />
 
@@ -79,7 +80,7 @@ const Home = () => {
 
               {/* Overlay untuk Judul Anime */}
               <div className="absolute bottom-0 w-full bg-black bg-opacity-70 text-white text-xs text-center p-1">{anime.title}</div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

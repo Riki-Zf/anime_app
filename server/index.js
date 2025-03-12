@@ -27,7 +27,7 @@ app.get("/api/ongoing", async (req, res) => {
 });
 app.get("/api/anime/:id", async (req, res) => {
   try {
-    const animeId = req.params.id; // Mengambil ID dari parameter URL
+    const animeId = req.params.id;
     const response = await axios.get(`${WAJIK_API}/samehadaku/anime/${animeId}`);
 
     // Mengirim respons data anime ke client
@@ -43,6 +43,48 @@ app.get("/api/anime/:id", async (req, res) => {
     } else {
       // Jika terjadi kesalahan lain
       res.status(500).json({ error: "Terjadi kesalahan saat mengambil data anime" });
+    }
+  }
+});
+app.get("/api/batch/:id", async (req, res) => {
+  try {
+    const batchId = req.params.id;
+    const response = await axios.get(`${WAJIK_API}/samehadaku/batch/${batchId}`);
+
+    // Mengirim respons data anime ke client
+    res.json(response.data);
+  } catch (error) {
+    // Menangani error dan memberikan respons yang lebih informatif
+    if (error.response) {
+      // Jika error berasal dari respons API eksternal
+      res.status(error.response.status).json({ error: error.response.data });
+    } else if (error.request) {
+      // Jika tidak ada respons dari server
+      res.status(500).json({ error: "Tidak ada respons dari server" });
+    } else {
+      // Jika terjadi kesalahan lain
+      res.status(500).json({ error: "Terjadi kesalahan saat mengambil batch anime" });
+    }
+  }
+});
+app.get("/api/episode/:id", async (req, res) => {
+  try {
+    const episodeId = req.params.id;
+    const response = await axios.get(`${WAJIK_API}/samehadaku/episode/${episodeId}`);
+
+    // Mengirim respons data anime ke client
+    res.json(response.data);
+  } catch (error) {
+    // Menangani error dan memberikan respons yang lebih informatif
+    if (error.response) {
+      // Jika error berasal dari respons API eksternal
+      res.status(error.response.status).json({ error: error.response.data });
+    } else if (error.request) {
+      // Jika tidak ada respons dari server
+      res.status(500).json({ error: "Tidak ada respons dari server" });
+    } else {
+      // Jika terjadi kesalahan lain
+      res.status(500).json({ error: "Terjadi kesalahan saat mengambil batch anime" });
     }
   }
 });
