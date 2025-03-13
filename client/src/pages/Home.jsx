@@ -17,11 +17,11 @@ const Home = () => {
         // Sesuaikan dengan struktur API terbaru
         if (response && response.data) {
           if (response.data.recent && response.data.recent.animeList) {
-            setRecentAnime(response.data.recent.animeList); // Ongoing jadi recent
+            setRecentAnime(response.data.recent.animeList); //  recent
           }
 
           if (response.data.batch && response.data.batch.batchList) {
-            setBatchAnime(response.data.batch.batchList); // Completed jadi batch
+            setBatchAnime(response.data.batch.batchList); //  batch
           }
         } else {
           throw new Error("Format data tidak sesuai");

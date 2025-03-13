@@ -1,4 +1,5 @@
 import React from "react";
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   return (
@@ -24,7 +25,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">ZeroFear-nime</a>
+        <img src={logo} alt="" className="w-50 h-20 p-1" />
       </div>
       <div className="navbar-end">
         <button className="btn btn-ghost btn-circle">

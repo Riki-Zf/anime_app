@@ -8,6 +8,8 @@ import Footer from "./components/Footer";
 import AnimeBatchDetail from "./pages/AnimeBatchDetail";
 import WatchEpisode from "./pages/WatchEpisode";
 
+import AnimeRecent from "./pages/AnimeRecent";
+
 const App = () => {
   return (
     <>
@@ -19,6 +21,7 @@ const App = () => {
           <Route path="/anime/:animeId" element={<AnimeDetail />} />
           <Route path="/batch/:batchId" element={<AnimeBatchDetail />} />
           <Route path="/watch/:episodeId" element={<WatchEpisode />} />
+          <Route path="/on-going" element={<AnimeRecent />} />
         </Routes>
       </div>
       <Footer />
