@@ -101,7 +101,7 @@ const Menu = () => {
           </li>
           <li>
             <NavLink to="/on-going" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400")}>
-              ON-GOING ANIME
+              ON-GOING
             </NavLink>
           </li>
           <li>

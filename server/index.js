@@ -4,25 +4,46 @@ const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
-// Perbaikan konfigurasi CORS
+// Definisikan array origin yang diizinkan
+const allowedOrigins = ["https://zerofearnime.vercel.app", "http://localhost:5173", "http://localhost:3000"];
+
+// Konfigurasi CORS yang fleksibel
 app.use(
   cors({
-    origin: ["https://zerofearnime.vercel.app", "http://localhost:3000"],
+    origin: function (origin, callback) {
+      // Izinkan permintaan tanpa origin (misalnya dari Postman atau mobile app)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
   })
 );
 
-// Tambahkan middleware tambahan untuk memastikan header CORS dikirim
+// Middleware untuk menangani header CORS secara dinamis
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://zerofearnime.vercel.app");
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
+  // Handling preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 
-// Handle preflight requests
+// Handle preflight requests - sebagai tambahan pengamanan
 app.options("*", cors());
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
