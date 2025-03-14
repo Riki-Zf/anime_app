@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 app.use(
   cors({
-    origin: "https://zerofearnime.vercel.app/", // Ganti dengan domain frontend kamu
+    origin: "https://zerofearnime.vercel.app", // Ganti dengan domain frontend kamu
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
     credentials: false,

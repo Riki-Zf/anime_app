@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = window.location.hostname === "localhost" ? "http://localhost:3000/api" : "https://anime-app-be.vercel.app/";
+const API_BASE = window.location.hostname === "localhost" ? "http://localhost:3000/api" : "https://anime-app-be.vercel.app";
 
 export const getHomeAnime = async () => {
   try {
