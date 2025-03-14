@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "https://anime-app-be.vercel.app/" || "http://localhost:3000/api";
 
 export const getHomeAnime = async () => {
   try {
@@ -8,6 +8,14 @@ export const getHomeAnime = async () => {
     return response.data;
   } catch (error) {
     console.error("gagal mengambil data home anime");
+  }
+};
+export const getAnime = async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/anime`);
+    return response.data;
+  } catch (error) {
+    console.error("gagal mengambil data anime");
   }
 };
 export const getRecentAnime = async (page = 1) => {
@@ -51,6 +59,32 @@ export const getAnimeServer = async (serverId) => {
     return response.data;
   } catch (error) {
     console.error("gagal mengambil server anime");
+    throw error; // Re-throw error agar bisa ditangkap di komponen
+  }
+};
+export const getAnimeSearch = async (query, page = 1) => {
+  try {
+    // Validasi parameter `query` (wajib ada)
+    if (!query) {
+      throw new Error("Parameter 'query' diperlukan untuk pencarian anime");
+    }
+
+    console.log(`Mengirim request ke API dengan query: ${query}, page: ${page}`);
+
+    // Lakukan permintaan ke API dengan parameter `q` dan `page`
+    const response = await axios.get(`${API_BASE}/search`, {
+      params: {
+        q: query, // Query pencarian
+        page, // Halaman (default: 1)
+      },
+    });
+
+    console.log("Response dari API search:", response.status);
+
+    // Mengembalikan data hasil pencarian
+    return response.data;
+  } catch (error) {
+    console.error("Gagal mengambil data pencarian anime:", error.message);
     throw error; // Re-throw error agar bisa ditangkap di komponen
   }
 };
