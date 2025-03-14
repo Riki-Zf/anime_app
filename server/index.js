@@ -4,7 +4,14 @@ const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://zerofearnime.vercel.app/", // Ganti dengan domain frontend kamu
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: false,
+  })
+);
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const WAJIK_API = "https://wajik-anime-api.vercel.app";
