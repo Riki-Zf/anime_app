@@ -4,14 +4,26 @@ const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
+// Perbaikan konfigurasi CORS
 app.use(
   cors({
-    origin: "https://zerofearnime.vercel.app", // Ganti dengan domain frontend kamu
-    methods: "GET,POST,PUT,DELETE",
+    origin: ["https://zerofearnime.vercel.app", "http://localhost:3000"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type,Authorization",
-    credentials: false,
+    credentials: true,
   })
 );
+
+// Tambahkan middleware tambahan untuk memastikan header CORS dikirim
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://zerofearnime.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+});
+
+// Handle preflight requests
+app.options("*", cors());
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const WAJIK_API = "https://wajik-anime-api.vercel.app";
