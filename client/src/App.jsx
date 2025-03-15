@@ -10,6 +10,7 @@ import WatchEpisode from "./pages/WatchEpisode";
 
 import AnimeRecent from "./pages/AnimeRecent";
 import SearchResults from "./pages/SearchResults";
+import AnimePopular from "./pages/AnimePopular";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/watch/:episodeId" element={<WatchEpisode />} />
           <Route path="/on-going" element={<AnimeRecent />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/popular" element={<AnimePopular />} />
         </Routes>
       </div>
       <Footer />

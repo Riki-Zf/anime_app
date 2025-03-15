@@ -27,6 +27,15 @@ export const getRecentAnime = async (page = 1) => {
     throw error; // Re-throw the error for handling in the component
   }
 };
+export const getPopularAnime = async (page = 1) => {
+  try {
+    const response = await axios.get(`${API_BASE}/popular?page=${page}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch recent anime data");
+    throw error; // Re-throw the error for handling in the component
+  }
+};
 export const getAnimeDetail = async (animeId) => {
   try {
     const response = await axios.get(`${API_BASE}/anime/${animeId}`);

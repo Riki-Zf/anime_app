@@ -105,7 +105,7 @@ const Menu = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/anime-list" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400")}>
+            <NavLink to="/popular" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400")}>
               POPULAR
             </NavLink>
           </li>
