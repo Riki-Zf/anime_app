@@ -18,6 +18,14 @@ export const getAnime = async () => {
     console.error("gagal mengambil data anime");
   }
 };
+export const getAnimeSchedule = async () => {
+  try {
+    const response = await axios.get(`${API_BASE}/schedule`);
+    return response.data;
+  } catch (error) {
+    console.error("gagal mengambil data jadwal anime");
+  }
+};
 export const getRecentAnime = async (page = 1) => {
   try {
     const response = await axios.get(`${API_BASE}/recent?page=${page}`);

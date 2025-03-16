@@ -74,6 +74,14 @@ app.get("/api/recent", async (req, res) => {
     res.status(500).json({ error: "gagal mengambil data anime ongoing" });
   }
 });
+app.get("/api/schedule", async (req, res) => {
+  try {
+    const response = await axios.get(`${WAJIK_API}/samehadaku/schedule`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "gagal mengambil data jadwal anime" });
+  }
+});
 app.get("/api/popular", async (req, res) => {
   try {
     const page = req.query.page || 1; // Ambil parameter `page` dari query, default ke 1 jika tidak ada

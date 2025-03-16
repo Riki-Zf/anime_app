@@ -11,6 +11,7 @@ import WatchEpisode from "./pages/WatchEpisode";
 import AnimeRecent from "./pages/AnimeRecent";
 import SearchResults from "./pages/SearchResults";
 import AnimePopular from "./pages/AnimePopular";
+import AnimeSchedule from "./pages/AnimeSchedule";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/on-going" element={<AnimeRecent />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/popular" element={<AnimePopular />} />
+          <Route path="//jadwal-rilis" element={<AnimeSchedule />} />
         </Routes>
       </div>
       <Footer />
