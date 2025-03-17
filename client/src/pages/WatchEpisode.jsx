@@ -42,6 +42,9 @@ const WatchEpisode = () => {
               }
             }
           }
+
+          // Save to watch history
+          saveToWatchHistory(response.data);
         } else {
           throw new Error("Format data tidak sesuai");
         }
@@ -57,6 +60,40 @@ const WatchEpisode = () => {
       fetchEpisodeDetail();
     }
   }, [episodeId]);
+
+  // Function to save episode to watch history
+  const saveToWatchHistory = (episodeData) => {
+    try {
+      // Get existing watch history or initialize empty array
+      const existingHistory = JSON.parse(localStorage.getItem("animeWatchHistory") || "[]");
+
+      // Create history item
+      const historyItem = {
+        episodeId: episodeData.episodeId,
+        title: episodeData.title,
+        poster: episodeData.poster || (episodeData.thumbnails && episodeData.thumbnails.length > 0 ? episodeData.thumbnails[0] : null),
+        animeName: episodeData.animeName || episodeData.animeTitle,
+        animeId: episodeData.animeId,
+        watchedAt: new Date().toISOString(),
+      };
+
+      // Remove this episode if it already exists in history
+      const filteredHistory = existingHistory.filter((item) => item.episodeId !== episodeData.episodeId);
+
+      // Add the new item at the beginning
+      const updatedHistory = [historyItem, ...filteredHistory];
+
+      // Limit history to 100 items
+      const limitedHistory = updatedHistory.slice(0, 100);
+
+      // Save to localStorage
+      localStorage.setItem("animeWatchHistory", JSON.stringify(limitedHistory));
+
+      console.log("Saved to watch history:", historyItem);
+    } catch (error) {
+      console.error("Error saving to watch history:", error);
+    }
+  };
 
   // Function to fetch server data when a server is selected
   const fetchServerData = async (serverId, serverTitle, qualityTitle) => {
@@ -173,9 +210,12 @@ const WatchEpisode = () => {
 
   return (
     <div className="container mx-auto px-2 sm:px-4 bg-gray-900 text-gray-200 min-h-screen">
-      <div className="my-4">
+      <div className="my-4 flex justify-between items-center">
         <Link to={`/anime/${episodeDetail.animeId}`} className="text-blue-400 hover:text-blue-300">
           &larr; Kembali ke Detail Anime
+        </Link>
+        <Link to="/history" className="text-blue-400 hover:text-blue-300">
+          Riwayat Tontonan
         </Link>
       </div>
 

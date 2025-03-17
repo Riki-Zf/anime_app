@@ -223,8 +223,8 @@ const Menu = () => {
             </NavLink>
           </li>
           <li className="list-none">
-            <NavLink to="/genre-list" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400")}>
-              GENRE LIST
+            <NavLink to="/history" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400")}>
+              HISTORY
             </NavLink>
           </li>
         </div>

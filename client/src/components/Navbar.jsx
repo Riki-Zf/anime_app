@@ -13,7 +13,7 @@ const Navbar = () => {
       </div>
 
       <div className="navbar bg-base-100 flex justify-center">
-        <img src={logo} alt="" className="w-24 h-10 p-1 sm:w-36 sm:h-15 md:w-48 md:h-20 lg:w-64 lg:h-20 justify-center" />
+        <img src={logo} alt="" className="w-30 h-12 p-1 sm:w-40 sm:h-15 md:w-50 md:h-20 lg:w-64 lg:h-20 justify-center" />
       </div>
     </>
   );
