@@ -191,8 +191,8 @@ const Menu = () => {
             </NavLink>
           </li>
           <li className="py-2">
-            <NavLink to="/genre-list" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400 text-white")} onClick={handleMenuItemClick}>
-              GENRE LIST
+            <NavLink to="/history" className={({ isActive }) => (isActive ? "text-blue-400" : "hover:text-blue-400 text-white")} onClick={handleMenuItemClick}>
+              HISTORY
             </NavLink>
           </li>
         </ul>
