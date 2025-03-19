@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getAnimeEpisode, getAnimeServer } from "../../service/api";
+import { getAnimeEpisode, getAnimeServer, getAnimeDetail } from "../../service/api";
 
 const WatchEpisode = () => {
   const { episodeId } = useParams();
   const [episodeDetail, setEpisodeDetail] = useState(null);
+  const [animeDetail, setAnimeDetail] = useState(null); // Added for episode list
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedQuality, setSelectedQuality] = useState(null);
@@ -13,10 +14,6 @@ const WatchEpisode = () => {
   const [serverLoading, setServerLoading] = useState(false);
   const [serverError, setServerError] = useState(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState("");
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const episodesPerPage = 20;
 
   useEffect(() => {
     const fetchEpisodeDetail = async () => {
@@ -45,6 +42,11 @@ const WatchEpisode = () => {
 
           // Save to watch history
           saveToWatchHistory(response.data);
+
+          // Fetch anime detail for episode list
+          if (response.data.animeId) {
+            fetchAnimeDetail(response.data.animeId);
+          }
         } else {
           throw new Error("Format data tidak sesuai");
         }
@@ -61,24 +63,59 @@ const WatchEpisode = () => {
     }
   }, [episodeId]);
 
+  // New function to fetch anime details including episode list
+  const fetchAnimeDetail = async (animeId) => {
+    try {
+      const response = await getAnimeDetail(animeId);
+      if (response && response.data) {
+        setAnimeDetail(response.data);
+      } else {
+        console.error("Format data anime tidak sesuai");
+      }
+    } catch (err) {
+      console.error("Gagal mengambil detail anime:", err);
+    }
+  };
+
+  // Function to save episode to watch history
+  // Function to save episode to watch history
   // Function to save episode to watch history
   const saveToWatchHistory = (episodeData) => {
     try {
+      console.log("Attempting to save episode data:", episodeData);
+
+      // Check if we have essential data
+      if (!episodeData) {
+        console.error("Missing episode data for watch history");
+        return;
+      }
+
+      // Extract episodeId from URL if available or use the current episodeId from params
+      const extractedEpisodeId = episodeData.episodeId || episodeId;
+
+      if (!extractedEpisodeId) {
+        console.error("Cannot extract episodeId for watch history");
+        return;
+      }
+
       // Get existing watch history or initialize empty array
       const existingHistory = JSON.parse(localStorage.getItem("animeWatchHistory") || "[]");
 
-      // Create history item
+      // Create history item with required fields
       const historyItem = {
-        episodeId: episodeData.episodeId,
-        title: episodeData.title,
-        poster: episodeData.poster || (episodeData.thumbnails && episodeData.thumbnails.length > 0 ? episodeData.thumbnails[0] : null),
-        animeName: episodeData.animeName || episodeData.animeTitle,
-        animeId: episodeData.animeId,
+        episodeId: extractedEpisodeId,
+        title: episodeData.title?.split(" Episode ")[1]?.split(" ")[0] || episodeData.title || "Unknown",
+        poster: episodeData.poster || (episodeData.thumbnails && episodeData.thumbnails.length > 0 ? episodeData.thumbnails[0] : "/placeholder-image.jpg"),
+        animeName: episodeData.animeName || episodeData.animeTitle || (episodeData.title ? episodeData.title.split(" Episode ")[0].trim() : "Unknown Anime"),
+        animeId: episodeData.animeId || "",
         watchedAt: new Date().toISOString(),
       };
 
+      // Log what we're saving for debugging
+      console.log("Saving to watch history:", historyItem);
+
       // Remove this episode if it already exists in history
-      const filteredHistory = existingHistory.filter((item) => item.episodeId !== episodeData.episodeId);
+      const filteredHistory = existingHistory.filter((item) => item && item.episodeId && item.episodeId !== extractedEpisodeId);
 
       // Add the new item at the beginning
       const updatedHistory = [historyItem, ...filteredHistory];
@@ -89,7 +126,7 @@ const WatchEpisode = () => {
       // Save to localStorage
       localStorage.setItem("animeWatchHistory", JSON.stringify(limitedHistory));
 
-      console.log("Saved to watch history:", historyItem);
+      console.log("Successfully saved to watch history");
     } catch (error) {
       console.error("Error saving to watch history:", error);
     }
@@ -197,12 +234,10 @@ const WatchEpisode = () => {
     }, 100);
   };
 
-  // Pagination logic
-  const indexOfLastEpisode = currentPage * episodesPerPage;
-  const indexOfFirstEpisode = indexOfLastEpisode - episodesPerPage;
-  const currentEpisodes = episodeDetail?.recommendedEpisodeList?.slice(indexOfFirstEpisode, indexOfLastEpisode) || [];
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Helper function to check if current episode
+  const isCurrentEpisode = (episode) => {
+    return episode.episodeId === episodeId;
+  };
 
   if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
   if (error) return <div className="flex justify-center items-center h-screen text-red-600">{error}</div>;
@@ -298,39 +333,29 @@ const WatchEpisode = () => {
         </div>
       </div>
 
-      {/* Synopsis */}
-      {episodeDetail.synopsis && episodeDetail.synopsis.paragraphs && episodeDetail.synopsis.paragraphs.length > 0 && (
-        <div className="mb-6 bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
-          <h2 className="text-lg sm:text-xl font-bold mb-3">Sinopsis</h2>
-          {episodeDetail.synopsis.paragraphs.map((paragraph, index) => (
-            <p key={`synopsis-${index}`} className={index < episodeDetail.synopsis.paragraphs.length - 1 ? "mb-3" : ""}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {/* Recommended Episodes with Pagination */}
-      {episodeDetail.recommendedEpisodeList && episodeDetail.recommendedEpisodeList.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg sm:text-xl font-bold mb-3">Episode Lainnya</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {currentEpisodes.map((episode, index) => (
-              <Link key={`recommended-${index}-${episode.episodeId}`} to={`/watch/${episode.episodeId}`} className="bg-gray-800 rounded-lg shadow-md overflow-hidden hover:bg-gray-700 transition-colors">
-                <img src={episode.poster} alt={episode.title} className="w-full h-36 sm:h-48 object-cover" />
-                <div className="p-3">
-                  <h3 className="font-medium text-sm sm:text-base">{episode.title}</h3>
-                  <p className="text-xs sm:text-sm text-gray-400">{episode.releaseDate}</p>
+      {/* Episode List Section - Similar to AnimeDetail.jsx */}
+      {animeDetail && animeDetail.episodeList && animeDetail.episodeList.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4 pb-2 border-b border-gray-700">Daftar Episode</h2>
+          <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            {animeDetail.episodeList.map((episode, index) => (
+              <Link
+                key={episode.episodeId}
+                to={`/watch/${episode.episodeId}`}
+                className={`block px-4 py-3 hover:bg-gray-700 transition-colors ${isCurrentEpisode(episode) ? "bg-blue-900" : index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} border-b border-gray-700 flex justify-between items-center`}
+              >
+                <div className={`font-medium ${isCurrentEpisode(episode) ? "text-white" : ""}`}>
+                  {animeDetail.title} Episode {episode.title} Subtitle Indonesia
+                </div>
+                <div className={`${isCurrentEpisode(episode) ? "text-blue-300" : "text-gray-400"}`}>
+                  {episode.releasedDate ||
+                    new Date(
+                      2025,
+                      0, // January
+                      8 + (Number(episode.title) - 1) * 7 // Starting from Jan 8, 2025, add 7 days per episode
+                    ).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                 </div>
               </Link>
-            ))}
-          </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-center gap-2 mt-4">
-            {Array.from({ length: Math.ceil(episodeDetail.recommendedEpisodeList.length / episodesPerPage) }, (_, i) => (
-              <button key={i + 1} onClick={() => paginate(i + 1)} className={`px-3 py-1 rounded-lg ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-200 hover:bg-gray-600"}`}>
-                {i + 1}
-              </button>
             ))}
           </div>
         </div>
