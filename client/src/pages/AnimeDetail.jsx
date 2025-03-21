@@ -176,7 +176,7 @@ const AnimeDetail = () => {
           <h2 className="text-xl font-bold mb-4 pb-2 border-b border-gray-700">Batch Download</h2>
           <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
             {animeDetail.batchList.map((batch, index) => (
-              <Link key={batch.batchId} to={batch.href} className={`block px-4 py-3 hover:bg-gray-700 transition-colors ${index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} border-b border-gray-700`}>
+              <Link key={batch.batchId} to={`/batch/${batch.batchId}`} className={`block px-4 py-3 hover:bg-gray-700 transition-colors ${index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} border-b border-gray-700`}>
                 <div className="font-medium">
                   {animeDetail.title} Batch {batch.quality || "Complete"} Subtitle Indonesia
                 </div>
